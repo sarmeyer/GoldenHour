@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(open:*)",
+      "WebSearch",
+      "Bash(grep:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(find:*)"
+    ]
+  }
+}

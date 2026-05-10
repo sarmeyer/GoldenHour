@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golden Hour — Design Directions</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --golden: #DDB05E;
+      --blue: #92A7D6;
+      --rose: #E0C0CB;
+      --lavender: #E6DAE4;
+      --slate: #8A95A8;
+      --text-primary: #1A1612;
+      --text-on-image: #F7F3EF;
+      --text-secondary: #6B6560;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      background: #EDE8E2;
+      color: var(--text-primary);
+      padding: 56px 40px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    header h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    header h2 {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 42px;
+      font-weight: 400;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      max-width: 480px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+
+    .palette-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.07);
+    }
+
+    .swatch-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+      margin-left: 4px;
+    }
+
+    /* ── Grid ── */
+    .directions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 72px 56px;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    .direction {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      cursor: pointer;
+    }
+
+    .direction-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .direction-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-align: center;
+    }
+
+    .direction-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 270px;
+      line-height: 1.65;
+    }
+
+    /* ── iPhone Frame ── */
+    .phone {
+      width: 300px;
+      height: 648px;
+      background: #111;
+      border-radius: 50px;
+      padding: 10px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.04),
+        0 40px 80px rgba(0,0,0,0.28),
+        0 12px 24px rgba(0,0,0,0.16);
+      transition: box-shadow 0.2s;
+    }
+
+    .direction:hover .phone {
+      box-shadow:
+        0 0 0 2px var(--golden),
+        0 40px 80px rgba(0,0,0,0.28),
+        0 12px 24px rgba(0,0,0,0.16);
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 42px;
+      overflow: hidden;
+      position: relative;
+      background: var(--lavender);
+    }
+
+    /* Status bar */
+    .status-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 44px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 22px 8px;
+      z-index: 10;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Tab bar base */
+    .tab-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 40px 10px;
+      z-index: 10;
+    }
+
+
+    /* ════════════════════════════════════
+       DIRECTION 1 — Bottom Scrim
+    ════════════════════════════════════ */
+    .d1 { position: relative; width: 100%; height: 100%; }
+
+    .d1-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(158deg,
+        #b86e28 0%, #D4953A 18%, #DDB05E 35%,
+        #d4a882 52%, #C8A0B0 68%, #92A7D6 100%);
+    }
+
+    .d1-scrim {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 65%;
+      background: linear-gradient(to top,
+        rgba(26,22,18,0.94) 0%,
+        rgba(26,22,18,0.65) 45%,
+        transparent 100%);
+    }
+
+    .d1-content {
+      position: absolute;
+      bottom: 62px; left: 0; right: 0;
+      padding: 0 22px;
+    }
+
+    .d1-verdict {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: #F7F3EF;
+      line-height: 1.28;
+      margin-bottom: 10px;
+    }
+
+    .d1-condition {
+      font-size: 12px;
+      color: #DDB05E;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      margin-bottom: 5px;
+    }
+
+    .d1-times {
+      font-size: 11px;
+      color: rgba(247,243,239,0.55);
+      letter-spacing: 0.2px;
+    }
+
+    .d1-tabbar {
+      background: rgba(26,22,18,0.88);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+
+    /* ════════════════════════════════════
+       DIRECTION 2 — Centered Card
+    ════════════════════════════════════ */
+    .d2 { position: relative; width: 100%; height: 100%; }
+
+    .d2-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(140deg,
+        #a85f22 0%, #DDB05E 28%, #d4a0b0 60%, #8099C4 100%);
+    }
+
+    .d2-card {
+      position: absolute;
+      top: 50%; left: 18px; right: 18px;
+      transform: translateY(-52%);
+      background: rgba(230,218,228,0.93);
+      backdrop-filter: blur(28px);
+      border-radius: 24px;
+      padding: 22px 22px 20px;
+      border: 1px solid rgba(255,255,255,0.45);
+    }
+
+    .d2-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9B6A2E;
+      margin-bottom: 10px;
+    }
+
+    .d2-verdict {
+      font-family: 'Georgia', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #1A1612;
+      line-height: 1.32;
+      margin-bottom: 14px;
+    }
+
+    .d2-divider {
+      height: 1px;
+      background: rgba(224,192,203,0.7);
+      margin-bottom: 14px;
+    }
+
+    .d2-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .d2-pill {
+      flex: 1;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .d2-pill-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6B6560;
+      margin-bottom: 2px;
+    }
+
+    .d2-pill-time {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .d2-tabbar {
+      background: rgba(230,218,228,0.85);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(224,192,203,0.5);
+    }
+
+
+    /* ════════════════════════════════════
+       DIRECTION 3 — Top Verdict
+    ════════════════════════════════════ */
+    .d3 { position: relative; width: 100%; height: 100%; }
+
+    .d3-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(158deg,
+        #b86e28 0%, #D4953A 20%, #DDB05E 38%,
+        #d4a882 55%, #C095B0 72%, #7A8EC2 100%);
+    }
+
+    .d3-header-scrim {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 52%;
+      background: linear-gradient(to bottom,
+        rgba(26,22,18,0.88) 0%,
+        rgba(26,22,18,0.4) 55%,
+        transparent 100%);
+    }
+
+    .d3-content {
+      position: absolute;
+      top: 44px; left: 0; right: 0;
+      padding: 16px 22px 0;
+    }
+
+    .d3-verdict {
+      font-family: 'Georgia', serif;
+      font-size: 25px;
+      font-weight: 400;
+      color: #F7F3EF;
+      line-height: 1.25;
+      margin-bottom: 9px;
+    }
+
+    .d3-condition {
+      font-size: 12px;
+      color: #DDB05E;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .d3-pill {
+      display: inline-block;
+      background: rgba(247,243,239,0.14);
+      border: 1px solid rgba(247,243,239,0.22);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 10px;
+      color: rgba(247,243,239,0.75);
+      letter-spacing: 0.3px;
+    }
+
+    .d3-tabbar {
+      background: rgba(26,22,18,0.8);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+
+    /* ════════════════════════════════════
+       DIRECTION 4 — Split Screen
+    ════════════════════════════════════ */
+    .d4 { position: relative; width: 100%; height: 100%; background: #E6DAE4; }
+
+    .d4-image {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 44%;
+      background: linear-gradient(145deg,
+        #b06020 0%, #DDB05E 35%, #E0C0CB 72%, #92A7D6 100%);
+    }
+
+    .d4-surface {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 59%;
+      background: #E6DAE4;
+      border-radius: 28px 28px 0 0;
+      padding: 20px 22px 0;
+    }
+
+    .d4-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9B6A2E;
+      margin-bottom: 8px;
+    }
+
+    .d4-verdict {
+      font-family: 'Georgia', serif;
+      font-size: 19px;
+      font-weight: 400;
+      color: #1A1612;
+      line-height: 1.35;
+      margin-bottom: 16px;
+    }
+
+    .d4-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .d4-card {
+      flex: 1;
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .d4-card-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6B6560;
+      margin-bottom: 3px;
+    }
+
+    .d4-card-time {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .d4-card-dur {
+      font-size: 10px;
+      color: #6B6560;
+      margin-top: 1px;
+    }
+
+    .d4-tabbar {
+      background: #E6DAE4;
+      border-top: 1px solid #E0C0CB;
+    }
+
+
+    /* ════════════════════════════════════
+       DIRECTION 5 — Minimal
+    ════════════════════════════════════ */
+    .d5 { position: relative; width: 100%; height: 100%; background: #EAE4DE; }
+
+    .d5-accent {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #DDB05E 0%, #E0C0CB 100%);
+    }
+
+    .d5-content {
+      position: absolute;
+      top: 72px; left: 26px; right: 26px;
+    }
+
+    .d5-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #DDB05E;
+      margin-bottom: 14px;
+    }
+
+    .d5-verdict {
+      font-family: 'Georgia', serif;
+      font-size: 30px;
+      font-weight: 400;
+      color: #1A1612;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .d5-summary {
+      font-size: 14px;
+      color: #6B6560;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .d5-rule {
+      height: 1px;
+      background: #E0C0CB;
+      margin-bottom: 22px;
+    }
+
+    .d5-time-block {
+      margin-bottom: 14px;
+    }
+
+    .d5-time-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 3px;
+    }
+
+    .d5-time-value {
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.3px;
+    }
+
+    .d5-tabbar {
+      background: #EAE4DE;
+      border-top: 1px solid #E0C0CB;
+    }
+
+
+    /* ════════════════════════════════════
+       DIRECTION 6 — Rising Card
+    ════════════════════════════════════ */
+    .d6 { position: relative; width: 100%; height: 100%; }
+
+    .d6-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(148deg,
+        #9b5820 0%, #D4903A 22%, #DDB05E 38%,
+        #cfa8b8 60%, #7A8EC2 100%);
+    }
+
+    .d6-card {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background: rgba(232,222,230,0.97);
+      border-radius: 30px 30px 0 0;
+      padding: 14px 22px 0;
+    }
+
+    .d6-handle {
+      width: 36px;
+      height: 4px;
+      background: #E0C0CB;
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+
+    .d6-badge {
+      display: inline-block;
+      background: #DDB05E;
+      color: #fff;
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .d6-verdict {
+      font-family: 'Georgia', serif;
+      font-size: 19px;
+      font-weight: 400;
+      color: #1A1612;
+      line-height: 1.35;
+      margin-bottom: 16px;
+    }
+
+    .d6-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .d6-block {
+      flex: 1;
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .d6-block-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6B6560;
+      margin-bottom: 3px;
+    }
+
+    .d6-block-time {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .d6-block-dur {
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    .d6-tabbar {
+      background: rgba(232,222,230,0.98);
+      border-top: 1px solid rgba(224,192,203,0.4);
+    }
+
+
+    /* ── Tab icons ── */
+    .tab-icon-home, .tab-icon-map {
+      display: block;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid #D8CFC8;
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Golden Hour · Design Directions</h1>
+  <h2>Six approaches to the home screen</h2>
+  <p>Each explores a different balance of atmosphere, information hierarchy, and surface treatment — using the same palette, content, and emotional goals.</p>
+  <div class="palette-row">
+    <div class="swatch" style="background:#92A7D6"></div>
+    <span class="swatch-label">#92A7D6</span>
+    <div class="swatch" style="background:#DDB05E;margin-left:12px;"></div>
+    <span class="swatch-label">#DDB05E</span>
+    <div class="swatch" style="background:#E0C0CB;margin-left:12px;"></div>
+    <span class="swatch-label">#E0C0CB</span>
+    <div class="swatch" style="background:#E6DAE4;margin-left:12px;border:1px solid #ccc;"></div>
+    <span class="swatch-label">#E6DAE4</span>
+  </div>
+</header>
+
+
+<div class="directions-grid">
+
+  <!-- ────────────────────────
+       DIRECTION 1 — Bottom Scrim
+  ──────────────────────────── -->
+  <div class="direction">
+    <span class="direction-label">Direction 01</span>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="d1">
+          <div class="d1-bg"></div>
+          <div class="d1-scrim"></div>
+
+          <div class="status-bar" style="color:rgba(247,243,239,0.65);">
+            <span>9:41</span>
+            <span style="font-size:9px;letter-spacing:2px;">● ● ●</span>
+          </div>
+
+          <div class="d1-content">
+            <div class="d1-verdict">Go tonight. Broken clouds — this is the good kind.</div>
+            <div class="d1-condition">Golden hour in 34 min · Broken clouds</div>
+            <div class="d1-times">6:47 – 7:21 PM · Blue hour until 7:48</div>
+          </div>
+
+          <div class="tab-bar d1-tabbar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" fill="#DDB05E"/>
+            </svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M9 3L3 6V21L9 18L15 21L21 18V3L15 6L9 3Z" stroke="rgba(247,243,239,0.4)" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="direction-title">Bottom Scrim</div>
+    <div class="direction-desc">Full-bleed condition photography with a rising gradient scrim. Verdict anchored at bottom in a warm serif. Most immersive — closest to the Dark Sky and atmospheric weather app reference.</div>
+  </div>
+
+
+  <!-- ────────────────────────
+       DIRECTION 2 — Centered Card
+  ──────────────────────────── -->
+  <div class="direction">
+    <span class="direction-label">Direction 02</span>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="d2">
+          <div class="d2-bg"></div>
+
+          <div class="status-bar" style="color:rgba(247,243,239,0.6);">
+            <span>9:41</span>
+            <span style="font-size:9px;letter-spacing:2px;">● ● ●</span>
+          </div>
+
+          <div class="d2-card">
+            <div class="d2-eyebrow">Golden Hour · Broken Clouds</div>
+            <div class="d2-verdict">Go tonight. This is the good kind of cloud cover.</div>
+            <div class="d2-divider"></div>
+            <div class="d2-row">
+              <div class="d2-pill" style="background:rgba(221,176,94,0.18);">
+                <div class="d2-pill-label">Golden Hour</div>
+                <div class="d2-pill-time" style="color:#9B6A2E;">6:47 – 7:21</div>
+              </div>
+              <div class="d2-pill" style="background:rgba(146,167,214,0.18);">
+                <div class="d2-pill-label">Blue Hour</div>
+                <div class="d2-pill-time" style="color:#5872A8;">7:21 – 7:48</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-bar d2-tabbar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" fill="#DDB05E"/>
+            </svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M9 3L3 6V21L9 18L15 21L21 18V3L15 6L9 3Z" stroke="#8A95A8" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="direction-title">Centered Card</div>
+    <div class="direction-desc">Frosted lavender card floats over full-bleed imagery. More structured — verdict lives in a contained, readable surface. The image is backdrop; information is clearly separated.</div>
+  </div>
+
+
+  <!-- ────────────────────────
+       DIRECTION 3 — Top Verdict
+  ──────────────────────────── -->
+  <div class="direction">
+    <span class="direction-label">Direction 03</span>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="d3">
+          <div class="d3-bg"></div>
+          <div class="d3-header-scrim"></div>
+
+          <div class="status-bar" style="color:rgba(247,243,239,0.65);">
+            <span>9:41</span>
+            <span style="font-size:9px;letter-spacing:2px;">● ● ●</span>
+          </div>
+
+          <div class="d3-content">
+            <div class="d3-verdict">Go tonight. Broken clouds — this is the good kind.</div>
+            <div class="d3-condition">Golden hour · 34 min away</div>
+            <div class="d3-pill">6:47 – 7:21 PM · Blue hour until 7:48</div>
+          </div>
+
+          <div class="tab-bar d3-tabbar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" fill="#DDB05E"/>
+            </svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M9 3L3 6V21L9 18L15 21L21 18V3L15 6L9 3Z" stroke="rgba(247,243,239,0.4)" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="direction-title">Top Verdict</div>
+    <div class="direction-desc">Verdict anchored at the top on a dark header scrim — lands first by position. Image occupies the rest. Editorial, like a headline over a photo. Good for scanning; unusual for weather apps.</div>
+  </div>
+
+
+  <!-- ────────────────────────
+       DIRECTION 4 — Split Screen
+  ──────────────────────────── -->
+  <div class="direction">
+    <span class="direction-label">Direction 04</span>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="d4">
+          <div class="d4-image">
+            <div class="status-bar" style="color:rgba(247,243,239,0.75);">
+              <span>9:41</span>
+              <span style="font-size:9px;letter-spacing:2px;">● ● ●</span>
+            </div>
+          </div>
+          <div class="d4-surface">
+            <div class="d4-eyebrow">Broken Clouds · Go Tonight</div>
+            <div class="d4-verdict">This is the good kind — expect dramatic color.</div>
+            <div class="d4-row">
+              <div class="d4-card" style="background:rgba(221,176,94,0.18);">
+                <div class="d4-card-label">Golden Hour</div>
+                <div class="d4-card-time" style="color:#9B6A2E;">6:47 – 7:21</div>
+                <div class="d4-card-dur">34 min left</div>
+              </div>
+              <div class="d4-card" style="background:rgba(146,167,214,0.18);">
+                <div class="d4-card-label">Blue Hour</div>
+                <div class="d4-card-time" style="color:#5872A8;">7:21 – 7:48</div>
+                <div class="d4-card-dur">27 min</div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-bar d4-tabbar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" fill="#DDB05E"/>
+            </svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M9 3L3 6V21L9 18L15 21L21 18V3L15 6L9 3Z" stroke="#8A95A8" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="direction-title">Split Screen</div>
+    <div class="direction-desc">Top half image, bottom half clean lavender surface. Clearest information hierarchy and the most readable in varied lighting. Slightly less immersive — trades atmosphere for structure.</div>
+  </div>
+
+
+  <!-- ────────────────────────
+       DIRECTION 5 — Minimal
+  ──────────────────────────── -->
+  <div class="direction">
+    <span class="direction-label">Direction 05</span>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="d5">
+          <div class="d5-accent"></div>
+
+          <div class="status-bar" style="color:#8A95A8;padding-top:2px;">
+            <span>9:41</span>
+            <span style="font-size:9px;letter-spacing:2px;">● ● ●</span>
+          </div>
+
+          <div class="d5-content">
+            <div class="d5-eyebrow">Tonight's Conditions</div>
+            <div class="d5-verdict">Go tonight. Broken clouds.</div>
+            <div class="d5-summary">This is the good kind of cloud cover. Expect warm color as the window opens.</div>
+            <div class="d5-rule"></div>
+            <div class="d5-time-block">
+              <div class="d5-time-label" style="color:#DDB05E;">Golden Hour</div>
+              <div class="d5-time-value">6:47 – 7:21 PM</div>
+            </div>
+            <div class="d5-time-block">
+              <div class="d5-time-label" style="color:#92A7D6;">Blue Hour</div>
+              <div class="d5-time-value" style="color:#5872A8;">7:21 – 7:48 PM</div>
+            </div>
+          </div>
+
+          <div class="tab-bar d5-tabbar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" fill="#DDB05E"/>
+            </svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M9 3L3 6V21L9 18L15 21L21 18V3L15 6L9 3Z" stroke="#8A95A8" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="direction-title">Minimal</div>
+    <div class="direction-desc">No background photography — palette and typography carry the atmosphere. Most readable in any ambient light. Allows richer condition copy. Loses the immediate visual emotional impact of the other directions.</div>
+  </div>
+
+
+  <!-- ────────────────────────
+       DIRECTION 6 — Rising Card
+  ──────────────────────────── -->
+  <div class="direction">
+    <span class="direction-label">Direction 06</span>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="d6">
+          <div class="d6-bg"></div>
+
+          <div class="status-bar" style="color:rgba(247,243,239,0.65);">
+            <span>9:41</span>
+            <span style="font-size:9px;letter-spacing:2px;">● ● ●</span>
+          </div>
+
+          <div class="d6-card">
+            <div class="d6-handle"></div>
+            <div class="d6-badge">Go Tonight · Broken Clouds</div>
+            <div class="d6-verdict">Expect dramatic color. This is the good kind of cloud cover.</div>
+            <div class="d6-row">
+              <div class="d6-block" style="background:rgba(221,176,94,0.16);">
+                <div class="d6-block-label">Golden Hour</div>
+                <div class="d6-block-time" style="color:#9B6A2E;">6:47 – 7:21</div>
+                <div class="d6-block-dur" style="color:#DDB05E;">34 min left</div>
+              </div>
+              <div class="d6-block" style="background:rgba(146,167,214,0.16);">
+                <div class="d6-block-label">Blue Hour</div>
+                <div class="d6-block-time" style="color:#5872A8;">7:21 – 7:48</div>
+                <div class="d6-block-dur" style="color:#92A7D6;">27 min</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-bar d6-tabbar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" fill="#DDB05E"/>
+            </svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M9 3L3 6V21L9 18L15 21L21 18V3L15 6L9 3Z" stroke="#8A95A8" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="direction-title">Rising Card</div>
+    <div class="direction-desc">Persistent card rises from bottom over full-bleed imagery — familiar iOS sheet pattern. Always-visible information surface over atmospheric photography. Clean separation; very native-feeling.</div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Golden Hour · UX Design Directions · 2026-05-09</p>
+  <p>Palette: #92A7D6 · #DDB05E · #E0C0CB · #E6DAE4</p>
+</footer>
+
+</body>
+</html>
