@@ -6,7 +6,8 @@
       "WebSearch",
       "Bash(grep:*)",
       "WebFetch(domain:github.com)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(tail:*)"
     ]
   }
 }
