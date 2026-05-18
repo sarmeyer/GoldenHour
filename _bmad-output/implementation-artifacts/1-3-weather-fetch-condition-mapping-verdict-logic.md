@@ -1,6 +1,6 @@
 # Story 1.3: Weather Fetch, Condition Mapping & Verdict Logic
 
-Status: review
+Status: done
 
 ## Story
 
@@ -483,3 +483,4 @@ All 6 tasks complete. Full acceptance criteria satisfied:
 |---|---|---|
 | 2026-05-10 | Story created, status: ready-for-dev | bmad-create-story |
 | 2026-05-15 | All tasks implemented and tests passing; status: review | bmad-dev-story |
+| 2026-05-17 | Code review: 3 patches applied, 7 deferred, status: done | bmad-code-review |

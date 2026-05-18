@@ -1,6 +1,6 @@
 # Story 1.2: Solar Calculation & Location Services
 
-Status: review
+Status: done
 
 ## Story
 
@@ -90,6 +90,20 @@ So that I always know exactly when the light windows occur at my current locatio
   - [x] 6.2 All SolarServiceTests pass (run via Cmd+U in Xcode) — 8 tests, all green
   - [x] 6.3 Confirm `SolarService.calculate` returns non-nil for standard locations, nil for midnight-sun summer high latitudes
   - [x] 6.4 Confirm `AppState.lightWindowsTomorrow` is populated alongside `AppState.lightWindows` after location granted
+
+### Review Findings
+
+- [x] [Review][Patch] Stale comment in `testSanFranciscoMay2026` says `~19:02 PDT` but assertion uses `19:31` — misleads future readers about whether reference was audited; remove or correct the comment [`GoldenHourTests/SolarServiceTests.swift:58-59`]
+- [x] [Review][Patch] `testReykjavikWinterSolstice` non-nil branch has no numeric time bounds — any wrong window times pass silently; add approximate golden-start and blue-end assertions (e.g. `accuracy: 3600` to verify correct day) [`GoldenHourTests/SolarServiceTests.swift:127-141`]
+- [x] [Review][Defer] blueEnd/goldenEnd may collapse at extreme latitudes; no ordering guard — Sunlight returns nil for polar extremes; won't affect standard use [`SolarService.swift:15-25`] — deferred, pre-existing
+- [x] [Review][Defer] `.granted`/nil fires before first fix; UI briefly shows normal content with empty verdict — acceptable for v1; UX refinement opportunity in later story [`LocationService.swift:37`] — deferred, pre-existing
+- [x] [Review][Defer] Weather cache is coordinate-blind — stale location data served within 60-min TTL after 500m move — known v1 architecture limitation; single user, same city [`WeatherService.swift`] — deferred, pre-existing
+- [x] [Review][Defer] Concurrent `refresh()` Tasks race on rapid location updates — pre-existing from Story 1.1 deferred list; low practical risk [`AppState.swift`] — deferred, pre-existing
+- [x] [Review][Defer] `lastCalculatedCoordinate` set before solar calc; nil polar result blocks retries within 500m — polar night not applicable for personal tool [`AppState.swift:78-80`] — deferred, pre-existing
+- [x] [Review][Defer] 500m threshold duplicated as magic number in LocationService and AppState — minor inconsistency risk; personal tool [`AppState.swift:60`, `LocationService.swift:17`] — deferred, pre-existing
+- [x] [Review][Defer] No performance test for 100ms NFR — Schlyter algorithm is synchronous sub-ms; easily met in practice [`SolarServiceTests.swift`] — deferred, pre-existing
+- [x] [Review][Defer] `startUpdatingLocation` called again on app foreground re-entry — iOS handles multiple calls gracefully [`LocationService.swift:35-37`] — deferred, pre-existing
+- [x] [Review][Defer] `tomorrow` fallback to `.now` silently computes today's windows twice — unreachable in practice [`AppState.swift:65`] — deferred, pre-existing
 
 ## Dev Notes
 

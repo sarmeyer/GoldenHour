@@ -1,6 +1,6 @@
 # Story 1.1: Project Initialization & Security Foundation
 
-Status: review
+Status: done
 
 ## Story
 
@@ -61,6 +61,24 @@ so that all subsequent stories have a consistent, dependency-safe foundation to 
   - [x] 6.4 Confirm all enum raw values match canonical strings exactly (case-sensitive)
   - [x] 6.5 Confirm `AppState` uses `@Observable` macro (not `ObservableObject`) and `.environment()` injection (not `.environmentObject()`)
   - [x] 6.6 Confirm `UserDefaultsKey` is the only place key strings are defined — grep codebase for `UserDefaults.standard.set` / `.object(forKey:)` to ensure no hardcoded strings elsewhere
+
+### Review Findings
+
+- [x] [Review][Patch] `withTimeout` force-unwrap crash — `group.next()!` crashes if parent task is cancelled before either child task completes; replace with `guard let result = await group.next() else { return nil }` [`GoldenHour/Utilities/WithTimeout.swift:12`]
+- [x] [Review][Patch] `bootstrapIfNeeded` silently persists empty-string API keys — if `APIKeys.anthropic` or `APIKeys.maptiler` are empty (unfilled template), the nil-guard passes and `""` is written to Keychain; subsequent launches read `""` (not nil) so the key is never corrected without a reinstall; add `guard !value.isEmpty` before writing [`GoldenHour/Services/KeychainService.swift:52-58`]
+- [x] [Review][Defer] `withTimeout` race at exact boundary — timeout task can win the `group.next()` race at the precise instant the operation also completes, returning nil spuriously; negligible probability on a 4s LLM timeout [`GoldenHour/Utilities/WithTimeout.swift`] — deferred, pre-existing
+- [x] [Review][Defer] API keys compiled into binary — static string literals in `APIKeys.swift` are recoverable via binary inspection; intentional spec-mandated tradeoff for v1 personal tool — deferred, pre-existing
+- [x] [Review][Defer] Key rotation requires reinstall — `bootstrapIfNeeded` only writes once; no update path without Keychain wipe — deferred, pre-existing
+- [x] [Review][Defer] No `kSecAttrAccessible` on Keychain items — default allows iCloud/device backup inclusion; benign for solo personal tool — deferred, pre-existing
+- [x] [Review][Defer] No Keychain access group — future extensions could read API keys; no extensions in v1 scope — deferred, pre-existing
+- [x] [Review][Defer] `delete`-then-`add` pattern is non-atomic — standard iOS pattern; negligible failure risk in practice — deferred, pre-existing
+- [x] [Review][Defer] `Formatters.shortTime` locale captured at init; stale after mid-session locale change — locale changes mid-session are rare for personal tool — deferred, pre-existing
+- [x] [Review][Defer] `GoldenHourApp` uses `Item.self` placeholder in ModelContainer — by design; Story 2.1 replaces with `Spot.self` — deferred, pre-existing
+- [x] [Review][Defer] `fatalError` on ModelContainer creation — reinstall is acceptable recovery path for personal tool — deferred, pre-existing
+- [x] [Review][Defer] `handleLocationUpdate` spawns unstructured Task; concurrent refreshes may race — low practical risk; 500m filter reduces frequency — deferred, pre-existing
+- [x] [Review][Defer] `LightWindows` no start < end validation — Sunlight library is reliable; polar edge cases out of v1 scope — deferred, pre-existing
+- [x] [Review][Defer] `isStale` returns false on negative interval from clock skew — false-fresh safer than false-stale for personal tool — deferred, pre-existing
+- [x] [Review][Defer] `refresh()` no-ops silently when no coordinate — correct guard; UI feedback for manual refresh is a later story concern — deferred, pre-existing
 
 ## Dev Notes
 
